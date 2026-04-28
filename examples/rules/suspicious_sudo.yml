@@ -1,0 +1,37 @@
+title: Sudo Execution of High-Risk Command
+id: 2b3c4d5e-6f70-8901-bcde-f12345678901
+status: experimental
+description: |
+  Detects sudo invocations of commands commonly used for shell escape,
+  account manipulation, or persistence. Mirrors LogHound's sudo detection
+  (https://github.com/B0bTheSkull/loghound) translated to portable Sigma.
+references:
+  - https://attack.mitre.org/techniques/T1548/003/
+author: B0bTheSkull
+date: 2026/03/14
+modified: 2026/03/14
+tags:
+  - attack.privilege_escalation
+  - attack.t1548.003
+logsource:
+  product: linux
+  service: auth
+detection:
+  sudo_invoked:
+    Image|endswith: '/sudo'
+  high_risk_command:
+    CommandLine|contains:
+      - '/bin/bash'
+      - '/bin/sh'
+      - '/bin/zsh'
+      - 'visudo'
+      - 'usermod'
+      - 'passwd '
+  condition: sudo_invoked and high_risk_command
+fields:
+  - User
+  - CommandLine
+falsepositives:
+  - Legitimate administrative shell sessions
+  - Configuration management tools running as root
+level: medium
