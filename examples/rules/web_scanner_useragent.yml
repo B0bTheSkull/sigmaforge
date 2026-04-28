@@ -1,0 +1,37 @@
+title: Web Vulnerability Scanner User-Agent
+id: 3c4d5e6f-7081-9012-cdef-123456789012
+status: experimental
+description: |
+  Detects HTTP requests carrying the default user-agent string of common
+  web vulnerability scanners. Most attackers leave these defaults in place
+  during initial recon. Mirrors LogHound's scanner detection in web-log mode.
+references:
+  - https://attack.mitre.org/techniques/T1595/002/
+author: B0bTheSkull
+date: 2026/03/14
+modified: 2026/03/14
+tags:
+  - attack.reconnaissance
+  - attack.t1595.002
+logsource:
+  category: webserver
+detection:
+  scanner_useragent:
+    cs-user-agent|contains:
+      - 'Nikto'
+      - 'sqlmap'
+      - 'nuclei'
+      - 'dirbuster'
+      - 'gobuster'
+      - 'wfuzz'
+      - 'masscan'
+      - 'Nmap Scripting Engine'
+  condition: scanner_useragent
+fields:
+  - cs-user-agent
+  - c-ip
+  - cs-uri-stem
+falsepositives:
+  - Authorized scanning by your security team (whitelist source IPs)
+  - User-Agent strings containing these substrings in legitimate clients (rare)
+level: high
