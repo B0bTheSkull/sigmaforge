@@ -63,7 +63,7 @@ sigmaforge convert examples/rules/web_scanner_useragent.yml --target splunk
 
 ```
 === web_scanner_useragent.yml -> splunk ===
-cs-user-agent IN ("*Nikto*", "*sqlmap*", "*nuclei*", "*dirbuster*", "*gobuster*", "*wfuzz*", "*masscan*", "*Nmap Scripting Engine*")
+"cs-user-agent" IN ("*Nikto*", "*sqlmap*", "*nuclei*", "*dirbuster*", "*gobuster*", "*wfuzz*", "*masscan*", "*Nmap Scripting Engine*") | table cs-user-agent,c-ip,cs-uri-stem
 ```
 
 ### Convert to Elastic Lucene
