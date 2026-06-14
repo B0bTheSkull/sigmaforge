@@ -9,10 +9,18 @@ from sigmaforge.converter import SUPPORTED_TARGETS, convert_rule
 from sigmaforge.validator import validate_rule
 
 
-def cmd_validate(args: argparse.Namespace) -> int:
-    rule_path = Path(args.rule)
+def _resolve_rule_path(rule: str) -> Path | None:
+    """Return the rule Path if it exists, else print an error and return None."""
+    rule_path = Path(rule)
     if not rule_path.exists():
         print(f"error: rule file not found: {rule_path}", file=sys.stderr)
+        return None
+    return rule_path
+
+
+def cmd_validate(args: argparse.Namespace) -> int:
+    rule_path = _resolve_rule_path(args.rule)
+    if rule_path is None:
         return 2
 
     result = validate_rule(rule_path)
@@ -33,9 +41,8 @@ def cmd_validate(args: argparse.Namespace) -> int:
 
 
 def cmd_convert(args: argparse.Namespace) -> int:
-    rule_path = Path(args.rule)
-    if not rule_path.exists():
-        print(f"error: rule file not found: {rule_path}", file=sys.stderr)
+    rule_path = _resolve_rule_path(args.rule)
+    if rule_path is None:
         return 2
 
     if args.target not in SUPPORTED_TARGETS:
